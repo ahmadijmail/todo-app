@@ -14,9 +14,10 @@ const ToDo = () => {
 
   function addItem(item) {
     item.id = uuid();
-    item.complete = false;
+    item.complete = true;
     console.log(item);
     setList([...list, item]);
+    //console.log("list data",list); 
   }
 
   function deleteItem(id) {
@@ -37,6 +38,9 @@ const ToDo = () => {
 
   }
 
+  function showComplete () {
+
+  }
   useEffect(() => {
     let incompleteCount = list.filter(item => !item.complete).length;
     setIncomplete(incompleteCount);
@@ -73,7 +77,8 @@ const ToDo = () => {
         </label>
       </form>
 
-      {list.map(item => (
+      <button onClick={showComplete}>Show complete</button>
+      {list.complete? list.map(item => (
         <div key={item.id}>
           <p>{item.text}</p>
           <p><small>Assigned to: {item.assignee}</small></p>
@@ -81,7 +86,9 @@ const ToDo = () => {
           <div onClick={() => toggleComplete(item.id)}>Complete: {item.complete.toString()}</div>
           <hr />
         </div>
-      ))}
+      )):<p>No complete</p>
+    
+    }
 
     </>
   );
