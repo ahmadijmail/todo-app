@@ -1,23 +1,31 @@
-import { useContext, useState, useEffect } from 'react';
-import { createContext } from 'react/cjs/react.production.min';
+import React, { useContext, useState, } from "react";
+//import { createContext } from "react/cjs/react.production.min";
+import ReactPaginate from 'react-paginate';
 
-const SettingsContext = createContext()
-const [showComplete, setShowComplete] = useState(false);
+export  const SettingsContext = React.createContext();
+
+export  function Settings(props) {
+
+const [showComplete, setShowComplete] = useState("false");
+const [numOfitems, setnumOfitems] = useState(3);
+
+const Settingsdata = {
+ 
+  showComplete:showComplete,
+  setShowComplete:setShowComplete,
+  numOfitems:numOfitems,
+  setnumOfitems:setnumOfitems,
 
 
-export default function Settings() {
+};
+  return (
+  
+      <SettingsContext.Provider value={Settingsdata} >
 
-    
-const state={
+      {props.children}
+      </SettingsContext.Provider >
 
-
+  );
 }
 
-
-
-    return (
-      <View>
-        <Text> $2 </Text>
-      </View>
-    )
-  }
+export default SettingsContext;
