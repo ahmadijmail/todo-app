@@ -3,9 +3,9 @@ import { useContext } from "react";
 import useForm from "../../hooks/form.js";
 import SettingsContext from "../../conText/settings";
 import { v4 as uuid } from "uuid";
-import ReactPaginate from "react-paginate";
 
-import "./todo.scss";
+import Lists from "../List/list"
+import  "./todo.scss";
 
 const ToDo = (props) => {
 
@@ -13,14 +13,18 @@ const ToDo = (props) => {
   const [incomplete, setIncomplete] = useState([]);
 
   const Settingsdata = useContext(SettingsContext);
-  // console.log(Settingsdata.showComplete);
-  const [pagenum, setpagenum] = useState(0);
-  const pagevisited = pagenum * Settingsdata.numOfitems;
+ 
+  
   const displaytodo = list
-    .slice(pagevisited, pagevisited + Settingsdata.numOfitems)
+    .slice(Settingsdata.lastpage, Settingsdata.pagevisited )
     .map((item) => (
+      <div>
+      
       <div class="form2">
+       
+        
         <div key={item.id}>
+          
           <p>{item.text}</p>
           <p>
             <small>Assigned to: {item.assignee}</small>
@@ -28,11 +32,16 @@ const ToDo = (props) => {
           <p>
             <small>Difficulty: {item.difficulty}</small>
           </p>
-          <div onClick={() => toggleComplete(item.id)}>
+          <div >
             Complete: {item.complete.toString()}
           </div>
+          
           <hr />
         </div>
+        <button  class="Complete" onClick={() => toggleComplete(item.id)}>Complete</button>
+        <button  class="delete" onClick={()=>deleteItem(item.id)}>Delete</button>
+      </div>
+      
       </div>
     ));
 
@@ -44,9 +53,9 @@ const ToDo = (props) => {
   function addItem(item) {
     item.id = uuid();
     item.complete = false;
-    // console.log(item);
+
     setList([...list, item]);
-    //console.log("list data",list);
+
   }
 
   function deleteItem(id) {
@@ -69,14 +78,10 @@ const ToDo = (props) => {
       if (item.complete == true) return item.complete;
     });
     setList(items);
-    //console.log(list);
-
-    //Settingsdata.setShowComplete(true)
+  
   }
 
-  function namoo(params) {
-    showComplete;
-  }
+  
 
   useEffect(() => {
     let incompleteCount = list.filter((item) => !item.complete).length;
@@ -84,12 +89,10 @@ const ToDo = (props) => {
 
     document.title = `To Do List: ${incomplete}`;
   }, [list]);
-  console.log(list);
 
-  let pageCount=Math.ceil(list.length/Settingsdata.numOfitems)
-  const changePage= ({selected})=>{
-    setpagenum(selected)
-  }
+
+ 
+  
   return (
     <>
       <form class="form" onSubmit={handleSubmit}>
@@ -125,19 +128,13 @@ const ToDo = (props) => {
         <button class="submit" type="submit">
           Add Item
         </button>
-        <button class="submit" onClick={showcolpetes}>
-          Show complete
-        </button>
+    
       </form>
 
       {displaytodo}
-      <ReactPaginate
-      previousLabel={"Previous"}
-      nextLabel={"Next"}
-      pageCount={pageCount}
-      onPagechange={changePage}
-      />
-
+   
+          <Lists totalposts={list.length} postperPage={Settingsdata.numOfitems}
+            />
    </>
   );
 };
