@@ -4,44 +4,46 @@ import useForm from "../../hooks/form.js";
 import SettingsContext from "../../conText/settings";
 import { v4 as uuid } from "uuid";
 
-import Lists from "../List/list"
-import  "./todo.scss";
+import Lists from "../List/list";
+import "./todo.scss";
 
 const ToDo = (props) => {
-
   const [list, setList] = useState([]);
   const [incomplete, setIncomplete] = useState([]);
-
   const Settingsdata = useContext(SettingsContext);
- 
-  
-  const displaytodo = list
-    .slice(Settingsdata.lastpage, Settingsdata.pagevisited )
+
+
+  function setcomps() {
+    let complete = list.filter((item) => item.complete == true);
+
+    Settingsdata.setcomplete(complete);
+    Settingsdata.setcomp(!Settingsdata.showcom);
+  }
+  const displaytodo = (Settingsdata.showcom == false ? list : Settingsdata.complete)
+    .slice(Settingsdata.lastpage, Settingsdata.pagevisited)
     .map((item) => (
-      <div>
-      
-      <div class="form2">
-       
-        
-        <div key={item.id}>
-          
-          <p>{item.text}</p>
-          <p>
-            <small>Assigned to: {item.assignee}</small>
-          </p>
-          <p>
-            <small>Difficulty: {item.difficulty}</small>
-          </p>
-          <div >
-            Complete: {item.complete.toString()}
+      <div key={item.id}>
+     
+        <div className="form2">
+          <div key={item.id}>
+            <p>{item.text}</p>
+            <p>
+              <small>Assigned to: {item.assignee}</small>
+            </p>
+            <p>
+              <small>Difficulty: {item.difficulty}</small>
+            </p>
+            <div>Complete: {item.complete.toString()}</div>
+
+            <hr />
           </div>
-          
-          <hr />
+          <button className="Complete" onClick={() => toggleComplete(item.id)}>
+            Complete
+          </button>
+          <button className="delete" onClick={() => deleteItem(item.id)}>
+            Delete
+          </button>
         </div>
-        <button  class="Complete" onClick={() => toggleComplete(item.id)}>Complete</button>
-        <button  class="delete" onClick={()=>deleteItem(item.id)}>Delete</button>
-      </div>
-      
       </div>
     ));
 
@@ -53,9 +55,7 @@ const ToDo = (props) => {
   function addItem(item) {
     item.id = uuid();
     item.complete = false;
-
     setList([...list, item]);
-
   }
 
   function deleteItem(id) {
@@ -73,69 +73,70 @@ const ToDo = (props) => {
 
     setList(items);
   }
-  function showcolpetes(complete) {
-    const items = list.filter((item) => {
-      if (item.complete == true) return item.complete;
-    });
-    setList(items);
-  
-  }
-
-  
 
   useEffect(() => {
     let incompleteCount = list.filter((item) => !item.complete).length;
+
     setIncomplete(incompleteCount);
 
     document.title = `To Do List: ${incomplete}`;
   }, [list]);
 
-
- 
-  
   return (
     <>
-      <form class="form" onSubmit={handleSubmit}>
-        <div class="title">Welcome</div>
-        <div class="subtitle">To Do List: {incomplete} items pending</div>
-        <div class="input-container ic1">
-          <input
-            onChange={handleChange}
-            id="firstname"
-            name="text"
-            class="input"
-            type="text"
-          />
-          <div class="cut"></div>
-          <label for="firstname" class="placeholder">
-            To Do Item
-          </label>
-        </div>
-        <div class="input-container ic2">
-          <input
-            onChange={handleChange}
-            name="assignee"
-            id="lastname"
-            class="input"
-            type="text"
-          />
-          <div class="cut"></div>
-          <label for="lastname" class="placeholder">
-            Assigned To
-          </label>
-        </div>
-
-        <button class="submit" type="submit">
-          Add Item
-        </button>
-    
-      </form>
-
-      {displaytodo}
-   
-          <Lists totalposts={list.length} postperPage={Settingsdata.numOfitems}
+      <div className="form">
+        <form onSubmit={handleSubmit}>
+          <div className="title">Welcome</div>
+          <div className="subtitle">To Do List: {incomplete} items pending</div>
+          <div className="input-container ic1">
+            <input
+              onChange={handleChange}
+              id="firstname"
+              name="text"
+              className="input"
+              type="text"
             />
-   </>
+            <div className="cut"></div>
+            <label htmlFor="firstname" className="placeholder">
+              To Do Item
+            </label>
+          </div>
+          <div className="input-container ic2">
+            <input
+              onChange={handleChange}
+              name="assignee"
+              id="lastname"
+              className="input"
+              type="text"
+            />
+            <div className="cut"></div>
+            <label htmlFor="lastname" className="placeholder">
+              Assigned To
+            </label>
+          </div>
+          <label>
+            <span>Difficulty</span>
+            <input
+              onChange={handleChange}
+              defaultValue={defaultValues.difficulty}
+              type="range"
+              min={1}
+              max={5}
+              name="difficulty"
+            />
+          </label>
+          <button className="submit" type="submit">
+            Add Item
+          </button>
+        </form>
+        <button className="submit" type="submit" onClick={() => setcomps(true)}>
+          {!Settingsdata.complete ? "Show Completed" : "Show All"}
+        </button>
+      </div>
+      {displaytodo}
+
+      <Lists totalposts={list.length} postperPage={Settingsdata.numOfitems} />
+    </>
   );
 };
 

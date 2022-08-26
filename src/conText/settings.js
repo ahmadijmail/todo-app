@@ -9,9 +9,15 @@ export  function Settings(props) {
 const [showComplete, setShowComplete] = useState("false");
 const [numOfitems, setnumOfitems] = useState(3);
 const [currentPage, setpagenum] = useState(1);
+let [complete, setcomplete] = useState();
+let [showcom, setcomp] = useState(false);
 const pagevisited = currentPage * numOfitems;
 const lastpage=pagevisited-numOfitems
 const Settingsdata = {
+  showcom:showcom,
+  setcomp:setcomp,
+  complete:complete,
+  setcomplete:setcomplete,
   lastpage:lastpage,
   pagevisited:pagevisited,
   currentPage:currentPage,
