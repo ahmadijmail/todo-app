@@ -12,18 +12,18 @@ const ToDo = (props) => {
   const [incomplete, setIncomplete] = useState([]);
   const Settingsdata = useContext(SettingsContext);
 
-
   function setcomps() {
     let complete = list.filter((item) => item.complete == true);
 
     Settingsdata.setcomplete(complete);
     Settingsdata.setcomp(!Settingsdata.showcom);
   }
-  const displaytodo = (Settingsdata.showcom == false ? list : Settingsdata.complete)
+  const displaytodo = (
+    Settingsdata.showcom == false ? list : Settingsdata.complete
+  )
     .slice(Settingsdata.lastpage, Settingsdata.pagevisited)
     .map((item) => (
       <div key={item.id}>
-     
         <div className="form2">
           <div key={item.id}>
             <p>{item.text}</p>
@@ -76,11 +76,14 @@ const ToDo = (props) => {
 
   useEffect(() => {
     let incompleteCount = list.filter((item) => !item.complete).length;
-
+    localStorage.setItem(
+      "iTemsPerPage",
+      JSON.stringify(Settingsdata.numOfitems)
+    );
     setIncomplete(incompleteCount);
 
     document.title = `To Do List: ${incomplete}`;
-  }, [list]);
+  }, [list, Settingsdata.numOfitems]);
 
   return (
     <>
@@ -129,13 +132,44 @@ const ToDo = (props) => {
             Add Item
           </button>
         </form>
+
         <button className="submit" type="submit" onClick={() => setcomps(true)}>
           {!Settingsdata.complete ? "Show Completed" : "Show All"}
         </button>
       </div>
       {displaytodo}
+      <div class="page">
+        <div class="select-dropdown">
+          <select
+            onChange={(e) => {
+              const tagetedd = e.target.value;
+              Settingsdata.setnumOfitems(tagetedd);
+            }}
+          >
+            <option value="3" class="select-dropdown">
+              Items Per Page
+            </option>
 
-      <Lists totalposts={list.length} postperPage={Settingsdata.numOfitems} />
+            <option class="links" value="4">
+              4
+            </option>
+
+            <option class="links" value="5">
+              5
+            </option>
+
+            <option class="links" value="6">
+              6
+            </option>
+
+            <option class="links" value="10">
+              10
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <Lists totalposts={list.length} />
     </>
   );
 };
