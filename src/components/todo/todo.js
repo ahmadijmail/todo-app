@@ -11,7 +11,8 @@ const ToDo = (props) => {
   const [list, setList] = useState([]);
   const [incomplete, setIncomplete] = useState([]);
   const Settingsdata = useContext(SettingsContext);
-
+  const StorageforComplete=JSON.parse(localStorage.getItem("CompletedStatus"));
+  console.log(StorageforComplete);
   function setcomps() {
     let complete = list.filter((item) => item.complete == true);
 
@@ -80,10 +81,14 @@ const ToDo = (props) => {
       "iTemsPerPage",
       JSON.stringify(Settingsdata.numOfitems)
     );
+    localStorage.setItem(
+      "CompletedStatus",
+      JSON.stringify(Settingsdata.showcom)
+    );
     setIncomplete(incompleteCount);
 
     document.title = `To Do List: ${incomplete}`;
-  }, [list, Settingsdata.numOfitems]);
+  }, [list, Settingsdata.numOfitems,Settingsdata.showcom]);
 
   return (
     <>
