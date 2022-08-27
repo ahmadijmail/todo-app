@@ -1,13 +1,13 @@
-import React, { useContext, useState, } from "react";
-//import { createContext } from "react/cjs/react.production.min";
+import React, { useContext, useState,useEffect } from "react";
 
 
 export  const SettingsContext = React.createContext();
 
 export  function Settings(props) {
 
+  const postperPagefromlocal=JSON.parse(localStorage.getItem("iTemsPerPage"))
 const [showComplete, setShowComplete] = useState("false");
-const [numOfitems, setnumOfitems] = useState(3);
+const [numOfitems, setnumOfitems] = useState(postperPagefromlocal?postperPagefromlocal:3);
 const [currentPage, setpagenum] = useState(1);
 let [complete, setcomplete] = useState();
 let [showcom, setcomp] = useState(false);
@@ -29,6 +29,16 @@ const Settingsdata = {
 
 
 };
+
+useEffect(()=>{
+
+
+  console.log(postperPagefromlocal);
+
+},[numOfitems])
+
+
+
   return (
   
       <SettingsContext.Provider value={Settingsdata} >

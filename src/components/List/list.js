@@ -2,14 +2,22 @@ import React from "react";
 import { useContext } from "react";
 import "./list.scss"
 import SettingsContext from "../../conText/settings";
-const Lists = ({ totalposts, postperPage }) => {
+import { useEffect } from "react/cjs/react.production.min";
+const Lists = ({ totalposts }) => {
   const Settingsdata = useContext(SettingsContext);
   
   const pages = [];
+  const postperPagefromlocal=JSON.parse(localStorage.getItem("iTemsPerPage"))
 
-  for (let i = 1; i <= Math.ceil(totalposts / postperPage); i++) {
+  //without Stoarge
+ // for (let i = 1; i <= Math.ceil(totalposts / postperPage); i++) { 
+
+
+ //with Stoarge 
+  for (let i = 1; i <= Math.ceil(totalposts / postperPagefromlocal); i++) {
     pages.push(i);
   }
+
   return (
     <div className="pagination">
       {pages.map((page, index) => {
