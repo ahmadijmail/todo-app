@@ -1,99 +1,87 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
+import superagent from 'superagent';
+import base64 from 'base-64';
+import jwt from 'jsonwebtoken';
 import cookie from 'react-cookies';
-import jwt_decode from 'jwt-decode';
-
-const testUsers = {
-  Admininistrator: {
-    password: 'admin',
-    name: 'Administrator',
-    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQWRtaW5pc3RyYXRvciIsInJvbGUiOiJhZG1pbiIsImNhcGFiaWxpdGllcyI6IlsnY3JlYXRlJywncmVhZCcsJ3VwZGF0ZScsJ2RlbGV0ZSddIiwiaWF0IjoxNTE2MjM5MDIyfQ.pAZXAlTmC8fPELk2xHEaP1mUhR8egg9TH5rCyqZhZkQ'
-  },
-  Editor: {
-    password: 'editor',
-    name: 'Editor',
-    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRWRpdG9yIiwicm9sZSI6ImVkaXRvciIsImNhcGFiaWxpdGllcyI6IlsncmVhZCcsJ3VwZGF0ZSddIiwiaWF0IjoxNTE2MjM5MDIyfQ.3aDn3e2pf_J_1rZig8wj9RiT47Ae2Lw-AM-Nw4Tmy_s'
-  },
-  Writer: {
-    password: 'writer',
-    name: 'Writer',
-    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiV3JpdGVyIiwicm9sZSI6IndyaXRlciIsImNhcGFiaWxpdGllcyI6IlsnY3JlYXRlJ10iLCJpYXQiOjE1MTYyMzkwMjJ9.dmKh8m18mgQCCJp2xoh73HSOWprdwID32hZsXogLZ68'
-  },
-  User: {
-    password: 'user',
-    name: 'User',
-    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiVXNlciIsInJvbGUiOiJ1c2VyIiwiY2FwYWJpbGl0aWVzIjoiWydyZWFkJ10iLCJpYXQiOjE1MTYyMzkwMjJ9.WXYvIKLdPz_Mm0XDYSOJo298ftuBqqjTzbRvCpxa9Go'
-  },
-};
 
 export const LoginContext = React.createContext();
+const API = `https://auth-api-ahmadijmail.herokuapp.com/signin`
+export default function LoginProvider(props) {
 
-class LoginProvider extends React.Component {
+    const [loginStatus, setLoginStatus] = useState(false);
+    const [usernameFromcookie, setuser2]=useState()
+    const [user, setUser] = useState({
+        username: cookie.load('username') || "",
+        capabilities: cookie.load('capabilities') || []
+    });
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      loggedIn: false,
-      can: this.can,
-      login: this.login,
-      logout: this.logout,
-      user: { capabilities: [] },
-      error: null,
-    };
-  }
 
-  can = (capability) => {
-    return this?.state?.user?.capabilities?.includes(capability);
-  }
+    useEffect(() => {
+        const tokenFromCookies = cookie.load('token');
+        if (tokenFromCookies) {
+            setLoginStatus(true);
+            setUser(user);
+           
+        } else {
+            setLoginStatus(false);
+            setUser({})
+        }
 
-  login = async (username, password) => {
-    let { loggedIn, token, user } = this.state;
-    let auth = testUsers[username];
+        const username= cookie.load('username')
+        setuser2(username)
+    }, []);
+    const loginFunction = async (username, password) => {
+        try {
+            const response = await superagent.post(`${API}`).set('authorization', `Basic ${base64.encode(`${username}:${password}`)}`);
+            console.log('body >>> ', response.body);
+            validateMyUser(response.body);
+        } catch (err) {
 
-    if (auth && auth.password === password) {
-      try {
-        this.validateToken(auth.token);
-      } catch (e) {
-        this.setLoginState(loggedIn, token, user, e);
-        console.error(e);
-      }
+        }
     }
-  }
-
-  logout = () => {
-    this.setLoginState(false, null, {});
-  };
-
-  validateToken = token => {
-    try {
-      let validUser = jwt_decode(token);
-      this.setLoginState(true, token, validUser);
+    const logoutFunction = () => {
+        setLoginStatus(false);
+        setUser({});
+        cookie.remove('token');
+        cookie.remove('actions');
+        cookie.remove('username');
     }
-    catch (e) {
-      this.setLoginState(false, null, {}, e);
-      console.log('Token Validation Error', e);
+    const validateMyUser = (user) => {
+        if (user.token) {
+            const userFromToken = jwt.decode(user.token);
+            console.log('username >>>> ', userFromToken);
+            setLoginStatus(true);
+            setUser(user);
+            console.log(user);
+            cookie.save('token', user.user.token);
+           
+            cookie.save('username', user.user.username);
+           
+         
+            cookie.save('capabilities', user.user.capabilities)
+        } else {
+            setLoginStatus(false);
+            setUser({});
+        }
     }
-
-  };
-
-  setLoginState = (loggedIn, token, user, error) => {
-    cookie.save('auth', token);
-    this.setState({ token, loggedIn, user, error: error || null });
-  };
-
-  componentDidMount() {
-    const qs = new URLSearchParams(window.location.search);
-    const cookieToken = cookie.load('auth');
-    const token = qs.get('token') || cookieToken || null;
-    this.validateToken(token);
-  }
-
-  render() {
+    //read
+    const can = (action) => {
+   
+        return user?.capabilities?.includes(action);
+    }
+    const state = {
+        loginStatus: loginStatus,
+        loginFunction: loginFunction,
+        logoutFunction: logoutFunction,
+        user: user,
+        usernameFromcookie:usernameFromcookie,
+       
+        canDo: can
+   
+    }
     return (
-      <LoginContext.Provider value={this.state}>
-        {this.props.children}
-      </LoginContext.Provider>
-    );
-  }
+        <LoginContext.Provider value={state}>
+            {props.children}
+        </LoginContext.Provider>
+    )
 }
-
-export default LoginProvider;

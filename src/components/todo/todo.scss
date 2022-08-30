@@ -3,7 +3,8 @@ body {
    background-color: #000;
     display: flex;
     justify-content: center;
-   height: 100vh;
+ margin: 0;
+  padding: 0;
   }
   
   .form {
@@ -186,28 +187,25 @@ margin-top: -50%;
 
 
 
-  * {
-    margin: 0;
-    padding: 0;
-    position: relative;
-    box-sizing: border-box;
-  }
-  
-  html, body {
-    height: 100%;
-  }
-  
-  .page {
-    display: block;
-    position: absolute;
-    top: 0%;
-    left: 200%;
-    margin: -17px -54px;
 
-  }
+ 
+  
+//   .page {
+//    display: block;
+//    position: absolute;
+//     top: 0%;
+//     align-items: left;
+  
+
+//  padding: 0;
+//   position: relative;
+//   box-sizing: border-box;
+//   }
   
   .select-dropdown {
     position: relative;
+    
+    margin-top: 0ch;
     background-color: #e6e6e6;
     width: auto;
     float: left;

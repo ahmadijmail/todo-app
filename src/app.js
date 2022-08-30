@@ -4,16 +4,17 @@ import Login from "./components/auth/login.js";
 import ToDo from "./components/todo/todo.js";
 import { Settings } from "./conText/settings.js";
 import LoginProvider from "./components/auth/context"
-//import Login from "./components/auth/auth"
+import NavBar from "./components/navBar/navBar"
 export default function App() {
   return (
 
-    
     <Settings>
       <LoginProvider>
       <Login/>
-      </LoginProvider>
+  
       <ToDo />
+      </LoginProvider>
     </Settings>
+
   );
 }
