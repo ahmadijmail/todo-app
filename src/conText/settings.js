@@ -33,7 +33,7 @@ const Settingsdata = {
 useEffect(()=>{
 
 
-  console.log(postperPagefromlocal);
+
 
 },[numOfitems])
 

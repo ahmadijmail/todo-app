@@ -12,7 +12,7 @@ const ToDo = (props) => {
   const [incomplete, setIncomplete] = useState([]);
   const Settingsdata = useContext(SettingsContext);
   const StorageforComplete=JSON.parse(localStorage.getItem("CompletedStatus"));
-  console.log(StorageforComplete);
+  //console.log(StorageforComplete);
   function setcomps() {
     let complete = list.filter((item) => item.complete == true);
 
@@ -143,31 +143,31 @@ const ToDo = (props) => {
         </button>
       </div>
       {displaytodo}
-      <div class="page">
-        <div class="select-dropdown">
+      <div className="page">
+        <div className="select-dropdown">
           <select
             onChange={(e) => {
               const tagetedd = e.target.value;
               Settingsdata.setnumOfitems(tagetedd);
             }}
           >
-            <option value="3" class="select-dropdown">
+            <option value="3" className="select-dropdown">
               Items Per Page
             </option>
 
-            <option class="links" value="4">
+            <option className="links" value="4">
               4
             </option>
 
-            <option class="links" value="5">
+            <option className="links" value="5">
               5
             </option>
 
-            <option class="links" value="6">
+            <option className="links" value="6">
               6
             </option>
 
-            <option class="links" value="10">
+            <option className="links" value="10">
               10
             </option>
           </select>
