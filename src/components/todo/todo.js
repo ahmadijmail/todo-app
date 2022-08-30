@@ -3,18 +3,21 @@ import { useContext } from "react";
 import useForm from "../../hooks/form.js";
 import SettingsContext from "../../conText/settings";
 import { v4 as uuid } from "uuid";
-
+import { When } from 'react-if';
 import Lists from "../List/list";
+import  {LoginContext}  from '../auth/context';
 import "./todo.scss";
 
 const ToDo = (props) => {
   const [list, setList] = useState([]);
   const [incomplete, setIncomplete] = useState([]);
   const Settingsdata = useContext(SettingsContext);
+  const authcontext = useContext(LoginContext)
+  console.log(authcontext);
   const StorageforComplete=JSON.parse(localStorage.getItem("CompletedStatus"));
-  //console.log(StorageforComplete);
+  console.log(authcontext.user.capabilities);
   function setcomps() {
-    let complete = list.filter((item) => item.complete == true);
+    let complete = list.filter((item) => !item.complete);
 
     Settingsdata.setcomplete(complete);
     Settingsdata.setcomp(!Settingsdata.showcom);
@@ -92,9 +95,10 @@ const ToDo = (props) => {
 
   return (
     <>
+    <When condition={authcontext.loginStatus}>
       <div className="form">
         <form onSubmit={handleSubmit}>
-          <div className="title">Welcome</div>
+          <div className="title">Welcome {authcontext.usernameFromcookie }</div>
           <div className="subtitle">To Do List: {incomplete} items pending</div>
           <div className="input-container ic1">
             <input
@@ -109,6 +113,9 @@ const ToDo = (props) => {
               To Do Item
             </label>
           </div>
+
+
+
           <div className="input-container ic2">
             <input
               onChange={handleChange}
@@ -133,16 +140,18 @@ const ToDo = (props) => {
               name="difficulty"
             />
           </label>
+          
           <button className="submit" type="submit">
             Add Item
           </button>
+       
         </form>
 
         <button className="submit" type="submit" onClick={() => setcomps(true)}>
-          {!Settingsdata.complete ? "Show Completed" : "Show All"}
+          {!Settingsdata.showcom ? "Show Pending Tasks" : "Show All"}
         </button>
       </div>
-      {displaytodo}
+
       <div className="page">
         <div className="select-dropdown">
           <select
@@ -173,8 +182,12 @@ const ToDo = (props) => {
           </select>
         </div>
       </div>
+      {displaytodo}
+     
 
       <Lists totalposts={list.length} />
+
+      </When>
     </>
   );
 };

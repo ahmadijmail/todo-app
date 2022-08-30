@@ -9,7 +9,7 @@ class Login extends React.Component {
 
   render() {
 
-    const isLoggedIn = this.context.loggedIn;
+    const isLoggedIn = this.context.loginStatus;
     const canDo = this.props.capability ? this.context.can(this.props.capability) : true;
     const okToRender = isLoggedIn && canDo;
 
