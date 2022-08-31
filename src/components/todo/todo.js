@@ -9,7 +9,23 @@ import { LoginContext } from "../auth/context";
 import "./todo.scss";
 
 const ToDo = (props) => {
-  const [list, setList] = useState([]);
+  const [list, setList] = useState([
+    {
+        "difficulty": 4,
+        "text": "Coding",
+        "assignee": "Task 1",
+        "id": "2fbb0d60-2227-48db-bd94-37b8ab53ba08",
+        "complete": true
+    },
+
+    {
+      "difficulty": 2,
+      "text": "Reading",
+      "assignee": "Task 2",
+      "id": "2fbb0d60-2227-48db-bd94-37b8ab53ba08",
+      "complete": false
+  }
+]);
   const [incomplete, setIncomplete] = useState([]);
   const Settingsdata = useContext(SettingsContext);
   const authcontext = useContext(LoginContext);
@@ -19,15 +35,12 @@ const ToDo = (props) => {
   );
 
   function setcomps() {
-
-    if (list.text!=="text"){
-
+    if (list.text !== "text") {
       let complete = list.filter((item) => !item.complete);
 
       Settingsdata.setcomplete(complete);
       Settingsdata.setcomp(!Settingsdata.showcom);
     }
-    
   }
 
   const [defaultValues] = useState({
@@ -42,11 +55,8 @@ const ToDo = (props) => {
   }
 
   function deleteItem(id) {
-
- 
     const items = list.filter((item) => item.id !== id);
     setList(items);
- 
   }
 
   function toggleComplete(id) {
@@ -60,9 +70,7 @@ const ToDo = (props) => {
     setList(items);
   }
 
-
   useEffect(() => {
-   
     let incompleteCount = list.filter((item) => !item.complete).length;
     localStorage.setItem(
       "iTemsPerPage",
@@ -77,7 +85,7 @@ const ToDo = (props) => {
     document.title = `To Do List: ${incomplete}`;
     console.log("list>>>", list);
 
-  
+
   }, [list, Settingsdata.numOfitems, Settingsdata.showcom]);
 
   return (
