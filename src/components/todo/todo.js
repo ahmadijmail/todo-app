@@ -175,14 +175,15 @@ const ToDo = (props) => {
               </button>
             </When>
 
-            <button
+           
+          </form> 
+          <button
               className="submit"
               type="submit"
               onClick={() => setcomps(true)}
             >
               {!Settingsdata.showcom ? "Show Pending Tasks" : "Show All"}
             </button>
-          </form> 
         </div> 
        
         </div> 
