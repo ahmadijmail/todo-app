@@ -18,52 +18,13 @@ const ToDo = (props) => {
     localStorage.getItem("CompletedStatus")
   );
 
-
   function setcomps() {
     let complete = list.filter((item) => !item.complete);
-   
+
     Settingsdata.setcomplete(complete);
     Settingsdata.setcomp(!Settingsdata.showcom);
   }
-  const displaytodo = (
-    Settingsdata.showcom == false ? list : Settingsdata.complete
-  )
-    .slice(Settingsdata.lastpage, Settingsdata.pagevisited)
-    .map((item) => (
-      <div key={item.id}>
-        <div className="form2">
-          <div key={item.id}>
- 
-           
-              <p>{item.text}</p>
 
-              <p>
-                <small>Assigned to: {item.assignee}</small>
-              </p>
-
-              <p>
-                <small>Difficulty: {item.difficulty}</small>
-              </p>
-              <div>Complete: {item.complete.toString()}</div>
-     
-            <hr />
-          </div>
-   
-          <When condition={authcontext.loginStatus && authcontext.user.capabilities.includes("update")}>
-         
-          <button className="Complete" onClick={() => toggleComplete(item.id)}>
-            Complete
-          </button>
-          </When>
-
-          <When condition={authcontext.loginStatus && authcontext.user.capabilities.includes("delete")}>
-          <button className="delete" onClick={() => deleteItem(item.id)}>
-            Delete
-          </button>
-          </When>
-        </div>
-      </div>
-    ));
 
   const [defaultValues] = useState({
     difficulty: 4,
@@ -110,14 +71,58 @@ const ToDo = (props) => {
   return (
     <>
       <When condition={authcontext.loginStatus}>
+      
+        <div className="hideandseek">
+      <div class="multi-button">
+          <div>
+           
+            <div>
+              <select
+                onChange={(e) => {
+                  const tagetedd = e.target.value;
+                  Settingsdata.setnumOfitems(tagetedd);
+                }}
+                class="button"
+                id="copy"
+              >
+                <option value="3" className="submit">
+                  Items Per Page
+                </option>
 
-        
-        <div className="form">
-        
-          <form onSubmit={handleSubmit}>
-            <div className="title">
-              Welcome {authcontext.user.username}
+                <option className="submit" value="4">
+                  4
+                </option>
+
+                <option className="submit" value="5">
+                  5
+                </option>
+
+                <option className="submit" value="6">
+                  6
+                </option>
+
+                <option className="submit" value="10">
+                  10
+                </option>
+              </select>
+              <When condition={authcontext.loginStatus}>
+              <button
+                class="button"
+                id="cut"
+                onClick={authcontext.logoutFunction}
+              >
+                <span> </span>
+                Logout
+              </button>
+            </When>
             </div>
+           
+          </div>
+         
+        </div>
+        <div className="form">
+          <form onSubmit={handleSubmit}>
+            <div className="title">Welcome {authcontext.user.username}</div>
             <div className="subtitle">
               To Do List: {incomplete} items pending
             </div>
@@ -159,63 +164,84 @@ const ToDo = (props) => {
                 name="difficulty"
               />
             </label>
-            <When condition={authcontext.loginStatus && authcontext.user.capabilities.includes("create") }>
-            <button className="submit" type="submit">
-              Add Item
-            </button>
-            </When >
-            
-          </form>
-
-          <button
-            className="submit"
-            type="submit"
-            onClick={() => setcomps(true)}
-          >
-            {!Settingsdata.showcom ? "Show Pending Tasks" : "Show All"}
-          </button>
-        </div>
-
-        <div className="page">
-        <When condition={authcontext.loginStatus}>
-          <button onClick={authcontext.logoutFunction} className="delete">
-            Logout
-          </button>
-        </When>
-          <div className="select-dropdown">
-            <select
-              onChange={(e) => {
-                const tagetedd = e.target.value;
-                Settingsdata.setnumOfitems(tagetedd);
-              }}
+            <When
+              condition={
+                authcontext.loginStatus &&
+                authcontext.user.capabilities.includes("create")
+              }
             >
-              <option value="3" className="submit">
-                Items Per Page
-              </option>
+              <button className="submit" type="submit">
+                Add Item
+              </button>
+            </When>
 
-              <option className="submit" value="4">
-                4
-              </option>
-
-              <option className="submit" value="5">
-                5
-              </option>
-
-              <option className="submit" value="6">
-                6
-              </option>
-
-              <option className="submit" value="10">
-                10
-              </option>
-            </select>
-            
-          </div>
-    
-        </div>
-        {displaytodo}
-
+            <button
+              className="submit"
+              type="submit"
+              onClick={() => setcomps(true)}
+            >
+              {!Settingsdata.showcom ? "Show Pending Tasks" : "Show All"}
+            </button>
+          </form> 
+        </div> 
+       
+        </div> 
+       <div className= "displist">
+       {
+        
+        (
+          Settingsdata.showcom == false ? list : Settingsdata.complete
+        ).slice(Settingsdata.lastpage, Settingsdata.pagevisited)
+          .map((item) => (
+            <div className="lists">
+            <div key={item.id}>
+              <div className="form2">
+                <div key={item.id}>
+                  <p>{item.text}</p>
+      
+                  <p>
+                    <small>Assigned to: {item.assignee}</small>
+                  </p>
+      
+                  <p>
+                    <small>Difficulty: {item.difficulty}</small>
+                  </p>
+                  <div>Complete: {item.complete.toString()}</div>
+      
+                  <hr />
+                </div>
+      
+                <When
+                  condition={
+                    authcontext.loginStatus &&
+                    authcontext.user.capabilities.includes("update")
+                  }
+                >
+                  <button
+                    className="Complete"
+                    onClick={() => toggleComplete(item.id)}
+                  >
+                    Complete
+                  </button>
+                </When>
+      
+                <When
+                  condition={
+                    authcontext.loginStatus &&
+                    authcontext.user.capabilities.includes("delete")
+                  }
+                >
+                  <button className="delete" onClick={() => deleteItem(item.id)}>
+                    Delete
+                  </button>
+                </When>
+              </div>
+            </div>
+            </div>
+          ))
+       }</div>
         <Lists totalposts={list.length} />
+        
       </When>
     </>
   );

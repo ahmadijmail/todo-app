@@ -12,7 +12,7 @@ export default function LoginProvider(props) {
     username: JSON.parse(localStorage.getItem("username")) || "",
     capabilities: JSON.parse(localStorage.getItem("capabilities")) || [],
   });
-const [error,setError]=useState()
+  const [error, setError] = useState();
   useEffect(() => {
     const tokenFromCookies = JSON.parse(localStorage.getItem("token"));
     if (tokenFromCookies) {
@@ -37,8 +37,8 @@ const [error,setError]=useState()
 
       setUser(response.body.user);
     } catch (err) {
-        setError(err)
-        console.log(err);
+      setError(err);
+      console.log(err);
     }
   };
   const logoutFunction = () => {
@@ -72,8 +72,7 @@ const [error,setError]=useState()
     loginFunction: loginFunction,
     logoutFunction: logoutFunction,
     user: user,
-    error:error,
-
+    error: error,
   };
   return (
     <LoginContext.Provider value={state}>
