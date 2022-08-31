@@ -2,7 +2,6 @@ import React from "react";
 import { useContext } from "react";
 import "./list.scss"
 import SettingsContext from "../../conText/settings";
-import { useEffect } from "react/cjs/react.production.min";
 const Lists = ({ totalposts }) => {
   const Settingsdata = useContext(SettingsContext);
   
