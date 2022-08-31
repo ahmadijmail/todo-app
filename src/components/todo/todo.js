@@ -105,7 +105,7 @@ const ToDo = (props) => {
                   10
                 </option>
               </select>
-              <When condition={authcontext.loginStatus}>
+             
               <button
                 class="button"
                 id="cut"
@@ -114,7 +114,7 @@ const ToDo = (props) => {
                 <span> </span>
                 Logout
               </button>
-            </When>
+      
             </div>
            
           </div>
